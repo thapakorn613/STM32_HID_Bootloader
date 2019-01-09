@@ -31,6 +31,7 @@ all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $@
+	cp $(EXECUTABLE) build/$(EXECUTABLE)
 
 .c.o:
 	$(CC) $(CFLAGS) $(INCLUDE_DIRS) $< -o $@
