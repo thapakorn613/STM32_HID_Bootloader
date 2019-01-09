@@ -143,6 +143,17 @@
 	#define LED1_MODE		(GPIOB->CRH |= GPIO_CRH_MODE12)
 	#define LED1_OFF		(GPIOB->BSRR = GPIO_BSRR_BS12)
 	#define LED1_ON		(GPIOB->BRR = GPIO_BRR_BR12)			
+
+#elif defined TARGET_GENERIC_F103_PB13
+	#define HAS_LED1_PIN
+	#define LED1_CLOCK_EN		(RCC->APB2ENR |= RCC_APB2ENR_IOPBEN)
+	#define LED1_CLOCK_DIS		(RCC->APB2ENR &= ~RCC_APB2ENR_IOPBEN)
+	#define LED1_BIT_0		(GPIOB->CRH &= ~GPIO_CRH_CNF13_0)		// set 0 to CNF13[0] 00 -> push-pull
+	#define LED1_BIT_1		(GPIOB->CRH &= ~GPIO_CRH_CNF13_1) 		// set 0 to CNF13[1] 00 -> push-pull
+	#define LED1_MODE		(GPIOB->CRH |= GPIO_CRH_MODE13) 		// set 11 to MODE13[1:0] 11 -> output mode @50MHz
+	#define LED1_OFF		(GPIOB->BRR = GPIO_BRR_BR13)			
+	#define LED1_ON		(GPIOB->BSRR = GPIO_BSRR_BS13)
+
 #else
     #error "No config for this target"
 #endif

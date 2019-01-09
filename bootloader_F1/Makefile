@@ -66,6 +66,7 @@ generic-pe5: $(SRCS) clean gccversion build_generic-pe5 copy_generic-pe5 info si
 generic-pb7: $(SRCS) clean gccversion build_generic-pb7 copy_generic-pb7 info size
 generic-pb0: $(SRCS) clean gccversion build_generic-pb0 copy_generic-pb0 info size
 generic-pb12: $(SRCS) clean gccversion build_generic-pb12 copy_generic-pb12 info size
+generic-pb13: $(SRCS) clean gccversion build_generic-pb13 copy_generic-pb13 info size
 
 build: $(TARGET).elf
 
@@ -141,6 +142,11 @@ build_generic-pb12: $(TARGET).elf $(TARGET).bin
 copy_generic-pb12:
 	cp $(TARGET).bin bootloader_only_binaries/hid_generic_pb12.bin
 
+build_generic-pb13: TARGETFLAGS= -DTARGET_GENERIC_F103_PB13
+build_generic-pb13: LINKER_SCRIPT=STM32F103C8T6.ld
+build_generic-pb13: $(TARGET).elf $(TARGET).bin
+copy_generic-pb13:
+	cp $(TARGET).bin bootloader_only_binaries/hid_generic_pb13.bin
 
 $(TARGET).elf: $(OBJS)
 	$(CC) $(LDFLAGS) $(CFLAGS) $(OBJS) -o "$@"
