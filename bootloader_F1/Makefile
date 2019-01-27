@@ -77,6 +77,7 @@ generic-pe5: $(SRCS) clean gccversion build_generic-pe5 copy_generic-pe5 info si
 generic-pb7: $(SRCS) clean gccversion build_generic-pb7 copy_generic-pb7 info size
 generic-pb0: $(SRCS) clean gccversion build_generic-pb0 copy_generic-pb0 info size
 generic-pb12: $(SRCS) clean gccversion build_generic-pb12 copy_generic-pb12 info size
+generic-pb13: $(SRCS) clean gccversion build_generic-pb13 copy_generic-pb13 info size
 
 build_maple-mini: TARGETFLAGS= -DTARGET_MAPLE_MINI
 build_maple-mini: LINKER_SCRIPT=STM32F103CBT6.ld
@@ -164,9 +165,10 @@ copy_generic-pb12: $(BIN_DIR)
 
 build_generic-pb13: TARGETFLAGS= -DTARGET_GENERIC_F103_PB13
 build_generic-pb13: LINKER_SCRIPT=STM32F103C8T6.ld
-build_generic-pb13: $(TARGET).elf $(TARGET).bin
-copy_generic-pb13:
-	cp $(TARGET).bin bootloader_only_binaries/hid_generic_pb13.bin
+build_generic-pb13: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).bin
+copy_generic-pb13: $(BIN_DIR)
+	$(ECHO) "COPY    $(BIN_DIR)/hid_generic_pb13.bin"
+	$(Q)$(CP) $(BUILD_DIR)/$(TARGET).bin $(BIN_DIR)/hid_generic_pb13.bin
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJS)
 	$(ECHO) "LD      $<"

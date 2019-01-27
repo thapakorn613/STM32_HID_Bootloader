@@ -26,7 +26,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdint.h>
-// #include "rs232.h"
+#include "rs232.h"
 #include "hidapi.h"
 
 #define SECTOR_SIZE  1024
@@ -63,6 +63,37 @@ static int usb_write(hid_device *device, uint8_t *buffer, int len)
 	return 1;
 }
 
+int serial_init(char *argument, uint8_t __timer)
+{
+
+	printf("> Trying to open the comport...\n");
+	if (RS232_OpenComport(argument))
+	{
+		return (0);
+	}
+	printf("> Toggling DTR...\n");
+
+	RS232_disableRTS();
+	RS232_enableDTR();
+	usleep(200000L);
+	RS232_disableDTR();
+	usleep(200000L);
+	RS232_enableDTR();
+	usleep(200000L);
+	RS232_disableDTR();
+	usleep(200000L);
+	RS232_send_magic();
+	usleep(200000L);
+	RS232_CloseComport();
+
+	//printf("A %i\n",__timer);
+	if (__timer > 0)
+	{
+		sleep(__timer);
+	}
+	return 0;
+}
+
 int main(int argc, char *argv[])
 {
 	uint8_t page_data[SECTOR_SIZE];
@@ -93,7 +124,7 @@ int main(int argc, char *argv[])
     _timer = atol(argv[3]);
   }
   
-	serial_init(argv[2], _timer); //Setting up Serial port
+  serial_init(argv[2], _timer); //Setting up Serial port
   hid_init();
   
   printf("> Searching for 1209:BEBA HID device...\n");
@@ -229,33 +260,4 @@ exit:
 	return error;
 }
 
-// int serial_init(char *argument, uint8_t __timer)
-// {
-
-// 	printf("> Trying to open the comport...\n");
-// 	if (RS232_OpenComport(argument))
-// 	{
-// 		return (0);
-// 	}
-// 	printf("> Toggling DTR...\n");
-
-// 	RS232_disableRTS();
-// 	RS232_enableDTR();
-// 	usleep(200000L);
-// 	RS232_disableDTR();
-// 	usleep(200000L);
-// 	RS232_enableDTR();
-// 	usleep(200000L);
-// 	RS232_disableDTR();
-// 	usleep(200000L);
-// 	RS232_send_magic();
-// 	usleep(200000L);
-// 	RS232_CloseComport();
-
-// 	//printf("A %i\n",__timer);
-// 	if (__timer > 0)
-// 	{
-// 		sleep(__timer);
-// 	}
-// 	return 0;
-// }
+#include "rs232.c"
