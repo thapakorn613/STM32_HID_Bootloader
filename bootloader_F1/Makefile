@@ -77,7 +77,6 @@ generic-pe5: $(SRCS) clean gccversion build_generic-pe5 copy_generic-pe5 info si
 generic-pb7: $(SRCS) clean gccversion build_generic-pb7 copy_generic-pb7 info size
 generic-pb0: $(SRCS) clean gccversion build_generic-pb0 copy_generic-pb0 info size
 generic-pb12: $(SRCS) clean gccversion build_generic-pb12 copy_generic-pb12 info size
-generic-pb13: $(SRCS) clean gccversion build_generic-pb13 copy_generic-pb13 info size
 
 build_maple-mini: TARGETFLAGS= -DTARGET_MAPLE_MINI
 build_maple-mini: LINKER_SCRIPT=STM32F103CBT6.ld
