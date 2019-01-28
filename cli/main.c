@@ -26,16 +26,16 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdint.h>
-#include "rs232.h"
+// #include "rs232.h"
 #include "hidapi.h"
 
-#define SECTOR_SIZE  1024
-#define HID_TX_SIZE    65
-#define HID_RX_SIZE     9
+#define SECTOR_SIZE 1024
+#define HID_TX_SIZE 65
+#define HID_RX_SIZE 9
 
-#define VID           0x1209
-#define PID           0xBEBA
-#define FIRMWARE_VER  0x0300
+#define VID 0x1209
+#define PID 0xBEBA
+#define FIRMWARE_VER 0x0300
 
 static int usb_write(hid_device *device, uint8_t *buffer, int len)
 {
@@ -47,7 +47,7 @@ static int usb_write(hid_device *device, uint8_t *buffer, int len)
 		if (retval < 0)
 		{
 			usleep(100 * 1000); // No data has been sent here. Delay and retry.
-													//sleep(1);
+								//sleep(1);
 		}
 		else
 		{
@@ -63,36 +63,36 @@ static int usb_write(hid_device *device, uint8_t *buffer, int len)
 	return 1;
 }
 
-int serial_init(char *argument, uint8_t __timer)
-{
+// int serial_init(char *argument, uint8_t __timer)
+// {
 
-	printf("> Trying to open the comport...\n");
-	if (RS232_OpenComport(argument))
-	{
-		return (0);
-	}
-	printf("> Toggling DTR...\n");
+// 	printf("> Trying to open the comport...\n");
+// 	if (RS232_OpenComport(argument))
+// 	{
+// 		return (0);
+// 	}
+// 	printf("> Toggling DTR...\n");
 
-	RS232_disableRTS();
-	RS232_enableDTR();
-	usleep(200000L);
-	RS232_disableDTR();
-	usleep(200000L);
-	RS232_enableDTR();
-	usleep(200000L);
-	RS232_disableDTR();
-	usleep(200000L);
-	RS232_send_magic();
-	usleep(200000L);
-	RS232_CloseComport();
+// 	RS232_disableRTS();
+// 	RS232_enableDTR();
+// 	usleep(200000L);
+// 	RS232_disableDTR();
+// 	usleep(200000L);
+// 	RS232_enableDTR();
+// 	usleep(200000L);
+// 	RS232_disableDTR();
+// 	usleep(200000L);
+// 	RS232_send_magic();
+// 	usleep(200000L);
+// 	RS232_CloseComport();
 
-	//printf("A %i\n",__timer);
-	if (__timer > 0)
-	{
-		sleep(__timer);
-	}
-	return 0;
-}
+// 	//printf("A %i\n",__timer);
+// 	if (__timer > 0)
+// 	{
+// 		sleep(__timer);
+// 	}
+// 	return 0;
+// }
 
 int main(int argc, char *argv[])
 {
@@ -108,57 +108,67 @@ int main(int argc, char *argv[])
 	uint32_t n_bytes = 0;
 	int i;
 	setbuf(stdout, NULL);
-  uint8_t _timer = 0;
-	
+	// uint8_t _timer = 0;
+
 	printf("\n+-----------------------------------------------------------------------+\n");
-	printf  ("|         HID-Flash v2.1 - STM32 HID Bootloader Flash Tool              |\n");
-	printf  ("|     (c)      2018 - Bruno Freitas       http://www.brunofreitas.com   |\n");
-	printf  ("|     (c) 2018-2019 - Vassilis Serasidis  https://www.serasidis.gr      |\n");
-	printf  ("|   Customized for STM32duino ecosystem   https://www.stm32duino.com    |\n");
-	printf  ("+-----------------------------------------------------------------------+\n\n");
-	
-	if(argc < 3) {
-		printf("Usage: hid-flash <bin_firmware_file> <comport> <delay (optional)>\n");
+	printf("|         HID-Flash v2.1 - STM32 HID Bootloader Flash Tool              |\n");
+	printf("|     (c)      2018 - Bruno Freitas       http://www.brunofreitas.com   |\n");
+	printf("|     (c) 2018-2019 - Vassilis Serasidis  https://www.serasidis.gr      |\n");
+	printf("|   Customized for STM32duino ecosystem   https://www.stm32duino.com    |\n");
+	printf("+-----------------------------------------------------------------------+\n\n");
+
+	if (argc < 2)
+	{
+		printf("Usage: hid-flash <bin_firmware_file>\n");
 		return 1;
-	}else if(argc == 4){
-    _timer = atol(argv[3]);
-  }
-  
-  serial_init(argv[2], _timer); //Setting up Serial port
-  hid_init();
-  
-  printf("> Searching for 1209:BEBA HID device...\n");
-  
-  struct hid_device_info *devs, *cur_dev;
-  uint8_t valid_hid_devices = 0;
-  
-  for(i=0;i<10;i++){ //Try up to 10 times to open the HID device.
-    devs = hid_enumerate(VID, PID);
-    cur_dev = devs;
-    while (cur_dev) { //Search for valid HID Bootloader USB devices
-      if((cur_dev->vendor_id == VID)&&(cur_dev->product_id = PID)){
-        valid_hid_devices++;
-        if(cur_dev->release_number < FIRMWARE_VER){ //The STM32 board has firmware lower than 3.00
-          printf("\nError - Please update the firmware to the latest version (v3.00+)");
-          goto exit;
-        }
-      }
-      cur_dev = cur_dev->next;
-    }
-    hid_free_enumeration(devs);
-    printf("#");
-    sleep(1);
-    if(valid_hid_devices > 0) break;
-  }
-  if (valid_hid_devices == 0){
-    printf("\nError - No HID Bootloader device is found");
-    goto exit;
-  } 
-  
-  handle = hid_open(VID, PID, NULL);
-  
-  if(i == 10){
-    printf("\n> Unable to open the HID device.\n");
+	}
+	// else if (argc == 4)
+	// {
+	// 	_timer = atol(argv[3]);
+	// }
+
+	// serial_init(argv[2], _timer); //Setting up Serial port
+	hid_init();
+
+	printf("> Searching for 1209:BEBA HID device...\n");
+
+	struct hid_device_info *devs, *cur_dev;
+	uint8_t valid_hid_devices = 0;
+
+	for (i = 0; i < 10; i++)
+	{ //Try up to 10 times to open the HID device.
+		devs = hid_enumerate(VID, PID);
+		cur_dev = devs;
+		while (cur_dev)
+		{ //Search for valid HID Bootloader USB devices
+			if ((cur_dev->vendor_id == VID) && (cur_dev->product_id = PID))
+			{
+				valid_hid_devices++;
+				if (cur_dev->release_number < FIRMWARE_VER)
+				{ //The STM32 board has firmware lower than 3.00
+					printf("\nError - Please update the firmware to the latest version (v3.00+)");
+					goto exit;
+				}
+			}
+			cur_dev = cur_dev->next;
+		}
+		hid_free_enumeration(devs);
+		printf("#");
+		sleep(1);
+		if (valid_hid_devices > 0)
+			break;
+	}
+	if (valid_hid_devices == 0)
+	{
+		printf("\nError - No HID Bootloader device is found");
+		goto exit;
+	}
+
+	handle = hid_open(VID, PID, NULL);
+
+	if (i == 10)
+	{
+		printf("\n> Unable to open the HID device.\n");
 		error = 1;
 		goto exit;
 	}
